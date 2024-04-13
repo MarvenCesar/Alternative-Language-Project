@@ -56,7 +56,7 @@ public class Main {
     }
     private static void writeCellMapToCSV(Map<String, Cell> cellMap, String filename) {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
-            out.println("Key, OEM, Model, ..."); // CSV Header
+            out.println("oem,model,launch_announced,launch_status,body_dimensions,body_weight,body_sim,display_type,display_size,display_resolution,features_sensors,platform_os"); // CSV Header
             for (Map.Entry<String, Cell> entry : cellMap.entrySet()) {
                 out.println(entry.getKey() + "," + entry.getValue().toString());
             }
