@@ -1,4 +1,4 @@
-Key, OEM, Model, ...
+oem,model,launch_announced,launch_status,body_dimensions,body_weight,body_sim,display_type,display_size,display_resolution,features_sensors,platform_os
 9X Pro,Honor,9X Pro,"2019,July 23","Available. Released 2019,09,163.5 x 77.3 x 8.8 mm (6.44 x 3.04 x 0.35 in),202 g (7.13 oz),"Hybrid Dual SIM (Nano-SIM,dual stand-by)","LTPS IPS LCD capacitive touchscreen,16M colors",
 247 Solar,Vodafone,247 Solar,"2010,April. Released 2010,May",0,null,null,Mini-SIM,"TFT,65K colors",1.44 inches,
 Redmi 10X Pro 5G,Xiaomi,Redmi 10X Pro 5G,"2020,May 26","Available. Released 2020,06,164.2 x 75.8 x 9 mm (6.46 x 2.98 x 0.35 in),208 g (7.34 oz),"Dual SIM (Nano-SIM,dual stand-by)","AMOLED capacitive touchscreen,16M colors",
