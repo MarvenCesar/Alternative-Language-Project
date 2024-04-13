@@ -52,13 +52,13 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        writeCellMapToFile(cellMap, "output.txt");
+        writeCellMapToCSV(cellMap, "output.csv");
     }
-    private static void writeCellMapToFile(Map<String, Cell> cellMap, String filename) {
+    private static void writeCellMapToCSV(Map<String, Cell> cellMap, String filename) {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
+            out.println("Key, OEM, Model, ..."); // CSV Header
             for (Map.Entry<String, Cell> entry : cellMap.entrySet()) {
-                out.println(entry.getKey() + " => " + entry.getValue().toString());
-                // Make sure your Cell class has a meaningful toString() method
+                out.println(entry.getKey() + "," + entry.getValue().toString());
             }
         } catch (IOException e) {
             System.err.println("Error while writing to the file: " + e.getMessage());
