@@ -1,3 +1,5 @@
+import static java.util.regex.Pattern.quote;
+
 public class Cell {
     private String oem;
     private String model;
@@ -135,19 +137,23 @@ public class Cell {
 
     @Override
     public String toString() {
-        return oem + "," +
-                model + "," +
-                launch_announced + "," +
-                launch_status + "," +
-                body_dimensions + "," +
-                body_weight + "," +
-                body_sim + "," +
-                display_type + "," +
-                display_size + "," +
-                display_resolution + "," +
-                features_sensors + "," +
-                platform_os + "," +
+        return quote(oem) + "," +
+                quote(model) + "," +
+                quote(launch_announced) + "," +
+                quote(launch_status) + "," +
+                quote(body_dimensions) + "," +
+                quote(body_weight) + "," +
+               quote(body_sim) + "," +
+                quote(display_type) + "," +
+                quote(display_size) + "," +
+                quote(display_resolution) + "," +
+                quote(features_sensors) + "," +
+                quote(platform_os) + "," +
                 "";
+    }
+    private String quote(String data) {
+        if (data == null) return "";
+        return "\"" + data.replace("\"", "\"\"") + "\""; // Encloses in quotes and escapes existing quotes
     }
 
 }
