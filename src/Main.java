@@ -47,9 +47,21 @@ public class Main {
                 Cell cell = new Cell(values[0], values[1] , values[2], values[3], values[4], values[5], values[6],
                         values[7], values[8], values[9], values[10], values[11]);
                 cellMap.put(values[1], cell); // Assumes the model name is unique and used as a key
+
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        writeCellMapToFile(cellMap, "output.txt");
+    }
+    private static void writeCellMapToFile(Map<String, Cell> cellMap, String filename) {
+        try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
+            for (Map.Entry<String, Cell> entry : cellMap.entrySet()) {
+                out.println(entry.getKey() + " => " + entry.getValue().toString());
+                // Make sure your Cell class has a meaningful toString() method
+            }
+        } catch (IOException e) {
+            System.err.println("Error while writing to the file: " + e.getMessage());
         }
     }
     private static String extractWeight(String weightStr) {

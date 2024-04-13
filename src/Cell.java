@@ -133,4 +133,21 @@ public class Cell {
         this.platform_os = platform_os;
     }
 
+    @Override
+    public String toString() {
+        return oem + "," +
+                model + "," +
+                launch_announced + "," +
+                launch_status + "," +
+                body_dimensions + "," +
+                body_weight + "," +
+                body_sim + "," +
+                display_type + "," +
+                display_size + "," +
+                display_resolution + "," +
+                features_sensors + "," +
+                platform_os + "," +
+                "";
+    }
+
 }
