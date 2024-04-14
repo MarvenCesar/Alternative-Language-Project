@@ -2,10 +2,11 @@
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.FileReader;
+import java.util.List;
 
 
 
@@ -20,7 +21,10 @@ public class Main {
         for (Integer key : cellMap.keySet()) {
             System.out.println("Key: " + key + " Data: " + cellMap.get(key));
         }
+        List<Cell> cells = new ArrayList<>(cellMap.values());
+        calculateAverageLaunchYear(cells);
         writeCellMapToCSV(cellMap, "output.csv");
+
     }
 
 
@@ -28,13 +32,14 @@ public class Main {
         Map<Integer, Cell> cellMap = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             br.readLine(); // Skip header
-            String line = br.readLine();
+            String line;
 
             int index = 0; // Initialize a counter
             while ((line = br.readLine()) != null) {
                 String[] values = processDataLine(line);
                 Integer launchYear = extractYear(values[2]);
-                Cell cell = new Cell(values[0], values[1], launchYear, values[3], values[4], values[5], values[6],
+                String launchStatusProcessed = processLaunchStatus(values[3]);
+                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], values[5], values[6],
                         values[7], values[8], values[9], values[10], values[11]);
                 cellMap.put(index, cell); // Use the index as the key
                 index++; // Increment the index for the next entry
@@ -45,19 +50,23 @@ public class Main {
         return cellMap;
     }
     private static String[] processDataLine(String line) {
-        String[] rawValues = line.split(",");
-        String[] values = new String[rawValues.length + 1];
-        for (int i = 0; i < rawValues.length; i++) {
-            // Trim the value to remove any leading or trailing whitespace.
-            String trimmedValue = rawValues[i].trim();
-            // Check if the value is empty or just a dash, and replace it with null.
-            if (trimmedValue.isEmpty() || trimmedValue.equals("-")) {
-                values[i] = null;
+        List<String> values = new ArrayList<>();
+        boolean inQuotes = false;
+        StringBuilder buffer = new StringBuilder();
+
+        for (char c : line.toCharArray()) {
+            if (c == '"') {
+                inQuotes = !inQuotes;  // Toggle the inQuotes flag
+            } else if (c == ',' && !inQuotes) {
+                values.add(buffer.toString().trim());  // Add the buffered field to values
+                buffer.setLength(0);  // Reset the buffer
             } else {
-                values[i] = trimmedValue;
+                buffer.append(c);  // Continue building the field
             }
         }
-        return values;
+        values.add(buffer.toString().trim());  // Add the last field to values
+
+        return values.toArray(new String[0]);  // Convert the list to an array and return
     }
     private static void writeCellMapToCSV(Map<Integer, Cell> cellMap, String filename) {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
@@ -76,16 +85,53 @@ public class Main {
         return matcher.find() ? matcher.group(1) : "0"; // Default to 0 if no number found
     }
     private static Integer extractYear(String launchAnnounced) {
-        if (launchAnnounced != null) {
-            Pattern pattern = Pattern.compile("(\\d{4})");  // Regex to find four consecutive digits
-            Matcher matcher = pattern.matcher(launchAnnounced);
-            if (matcher.find()) {
-                return Integer.parseInt(matcher.group(1));  // Return the first group of four digits found
-            }
+        Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
+        Matcher yearMatcher = yearPattern.matcher(launchAnnounced);
+        if (yearMatcher.find()) {
+            return Integer.parseInt(yearMatcher.group());  // Return the year as an Integer
         }
-        return null;  // Return null if no year is found or input is null
+        return null;  // Return null if no year is found
     }
-}
+    private static String processLaunchStatus(String launchStatus) {
+        if (launchStatus != null && (launchStatus.equals("Discontinued") || launchStatus.equals("Cancelled"))) {
+            return launchStatus;
+        }
+
+        Pattern pattern = Pattern.compile("\\b(\\d{4})\\b");
+        Matcher matcher = pattern.matcher(launchStatus);
+
+        if (matcher.find()) {
+            return matcher.group(1);  // Return the matched year
+        }
+
+        return null;  // If it doesn't match the year pattern or the special cases, return null
+    }
+    private static void calculateAverageLaunchYear(List<Cell> cells) {
+        int totalYears = 0;
+        int yearCount = 0;
+
+        for (Cell cell : cells) {
+            String launchStatus = cell.getLaunchStatus();
+
+            // If launchStatus is a four-digit number, parse and include it in the calculation.
+            if (launchStatus != null && launchStatus.matches("\\b\\d{4}\\b")) {
+                totalYears += Integer.parseInt(launchStatus);
+                yearCount++;
+            }
+            // Strings like 'Discontinued' or 'Cancelled' are ignored for the calculation.
+        }
+
+        if (yearCount > 0) {
+            double averageYear = (double) totalYears / yearCount;
+            System.out.println("Average Launch Year: " + averageYear);
+        } else {
+            System.out.println("No valid launch years to calculate average.");
+        }
+    }
+    }
+
+
+
 
 
 
