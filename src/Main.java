@@ -27,6 +27,36 @@ public class Main {
 
     }
 
+    private static String[] customCsvLineSplitter(String line) {
+        // A placeholder that is unlikely to appear in the data.
+        final String placeholder = "CUBICCM";
+
+        // Replace " cc" and associated numerical value with the placeholder
+        line = line.replaceAll("(\\d+)\\s*cc", "$1" + placeholder);
+
+        // Split the line by commas that are not within quotes
+        List<String> values = new ArrayList<>();
+        boolean inQuotes = false;
+        StringBuilder currentField = new StringBuilder();
+
+        for (char c : line.toCharArray()) {
+            if (c == '"') {
+                inQuotes = !inQuotes; // Toggle the inQuotes flag
+            } else if (c == ',' && !inQuotes) {
+                values.add(currentField.toString()); // Add the currentField to values
+                currentField.setLength(0); // Reset the StringBuilder
+            } else {
+                currentField.append(c); // Append the character to the current field
+            }
+        }
+        values.add(currentField.toString()); // Add the last field
+
+        // Restore " cc" to any field that contains the placeholder
+        return values.stream()
+                .map(s -> s.replace(placeholder, " cc"))
+                .toArray(String[]::new);
+    }
+
 
     private static Map<Integer, Cell> processCsvFile(String filePath) {
         Map<Integer, Cell> cellMap = new HashMap<>();
@@ -39,7 +69,8 @@ public class Main {
                 String[] values = processDataLine(line);
                 Integer launchYear = extractYear(values[2]);
                 String launchStatusProcessed = processLaunchStatus(values[3]);
-                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], values[5], values[6],
+                Float bodyWeight = extractWeightInGrams(values[5]);
+                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], bodyWeight, values[6],
                         values[7], values[8], values[9], values[10], values[11]);
                 cellMap.put(index, cell); // Use the index as the key
                 index++; // Increment the index for the next entry
@@ -127,6 +158,24 @@ public class Main {
         } else {
             System.out.println("No valid launch years to calculate average.");
         }
+    }
+    private static Float extractWeightInGrams(String bodyWeight) {
+        // Regex to find an integer or float number followed by a 'g' (ignoring case).
+        Pattern pattern = Pattern.compile("(\\d+(?:\\.\\d+)?)\\s*g", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(bodyWeight);
+
+        if (matcher.find()) {
+            String weightString = matcher.group(1);  // Extract the number before 'g'
+            try {
+                return Float.parseFloat(weightString);  // Parse the number as float and return
+            } catch (NumberFormatException e) {
+                // Handle the case where the number is not in a valid format
+                System.err.println("Invalid weight format: " + bodyWeight);
+                return null;
+            }
+        }
+
+        return null;  // Return null if no valid weight is found
     }
     }
 

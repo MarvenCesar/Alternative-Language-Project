@@ -4,7 +4,7 @@ public class Cell {
     private Integer launch_announced;
     private String launch_status;
     private String body_dimensions;
-    private String body_weight;
+    private Float body_weight;
     private String body_sim;
     private String display_type;
     private String display_size;
@@ -13,7 +13,7 @@ public class Cell {
     private String platform_os;
 
     public Cell(String oem, String model, Integer launched_announced, String launch_status, String body_dimension,
-                String body_weight, String body_sim, String display_type, String display_size, String display_resolution,
+                Float body_weight, String body_sim, String display_type, String display_size, String display_resolution,
                 String features_sensors, String platform_os) {
         this.oem = oem;
         this.model = model;
@@ -72,11 +72,11 @@ public class Cell {
     }
 
     // Getters and setters for bodyWeight
-    public String getBodyWeight() {
+    public Float getBodyWeight() {
         return body_weight;
     }
 
-    public void setBodyWeight(String body_weight) {
+    public void setBodyWeight(Float body_weight) {
         this.body_weight = body_weight;
     }
 
