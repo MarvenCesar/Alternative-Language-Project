@@ -5,59 +5,66 @@ import java.util.Map;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.FileReader;
+
 
 
 
 public class Main {
+    private static final int NUM_FIELDS = 12;
+    private static final int WEIGHT_COLUMN_INDEX = 5;
+
     public static void main(String[] args) {
-        String line;
-        Map<String, Cell> cellMap = new HashMap<>();
-        final int weightColumnIndex = 5;
-
-        try (BufferedReader br = new BufferedReader(new FileReader("src/cells.csv"))) {
-            // Skip the header
-            br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                String[] rawValues = line.split(",");
-                String[] values = new String[rawValues.length];
-
-                if (values.length < 12) {
-                    // If so, create a new array with 12 elements
-                    String[] completeValues = new String[12];
-                    // Copy the existing values into the new array
-                    System.arraycopy(values, 0, completeValues, 0, values.length);
-                    // Fill the rest of the array with a default value or an empty string
-                    Arrays.fill(completeValues, values.length, 12, "default"); // You can choose an appropriate default value
-                    // Use the new array with complete values
-                    values = completeValues;
-                }
-                for (int i = 0; i < rawValues.length; i++) {
-                    if (rawValues[i].trim().isEmpty() || rawValues[i].trim().equals("-")) {
-                        values[i] = null; // Replace with null or ""
-                    } else if (i == weightColumnIndex) { // Replace with the actual index of the weight column
-                        values[i] = extractWeight(rawValues[i]);
-                    } else {
-                        values[i] = rawValues[i].trim();
-                    }
-                }
-                Integer weight = (values[weightColumnIndex] != null && !values[weightColumnIndex].isEmpty())
-                        ? Integer.parseInt(values[weightColumnIndex]) : null;
-
-                Cell cell = new Cell(values[0], values[1] , values[2], values[3], values[4], values[5], values[6],
-                        values[7], values[8], values[9], values[10], values[11]);
-                cellMap.put(values[1], cell); // Assumes the model name is unique and used as a key
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        Map<Integer, Cell> cellMap = processCsvFile("src/cells.csv");
+        // Example of using the map
+        for (Integer key : cellMap.keySet()) {
+            System.out.println("Key: " + key + " Data: " + cellMap.get(key));
         }
         writeCellMapToCSV(cellMap, "output.csv");
     }
-    private static void writeCellMapToCSV(Map<String, Cell> cellMap, String filename) {
+
+
+    private static Map<Integer, Cell> processCsvFile(String filePath) {
+        Map<Integer, Cell> cellMap = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            br.readLine(); // Skip header
+            String line = br.readLine();
+
+            int index = 0; // Initialize a counter
+            while ((line = br.readLine()) != null) {
+                String[] values = processDataLine(line);
+                Integer launchYear = extractYear(values[2]);
+                Cell cell = new Cell(values[0], values[1], launchYear, values[3], values[4], values[5], values[6],
+                        values[7], values[8], values[9], values[10], values[11]);
+                cellMap.put(index, cell); // Use the index as the key
+                index++; // Increment the index for the next entry
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        }
+        return cellMap;
+    }
+    private static String[] processDataLine(String line) {
+        String[] rawValues = line.split(",");
+        String[] values = new String[rawValues.length + 1];
+        for (int i = 0; i < rawValues.length; i++) {
+            // Trim the value to remove any leading or trailing whitespace.
+            String trimmedValue = rawValues[i].trim();
+            // Check if the value is empty or just a dash, and replace it with null.
+            if (trimmedValue.isEmpty() || trimmedValue.equals("-")) {
+                values[i] = null;
+            } else {
+                values[i] = trimmedValue;
+            }
+        }
+        return values;
+    }
+    private static void writeCellMapToCSV(Map<Integer, Cell> cellMap, String filename) {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
-            out.println("oem,model,launch_announced,launch_status,body_dimensions,body_weight,body_sim,display_type,display_size,display_resolution,features_sensors,platform_os"); // CSV Header
-            for (Map.Entry<String, Cell> entry : cellMap.entrySet()) {
+            // Optionally write a header line
+            out.println("Index,OEM,Model,Launch Announced,Launch Status,Body Dimensions,Body Weight,Body SIM,Display Type,Display Size,Display Resolution,Features Sensors,Platform OS");
+            // Iterate over each entry in the map
+            for (Map.Entry<Integer, Cell> entry : cellMap.entrySet()) {
                 out.println(entry.getKey() + "," + entry.getValue().toString());
             }
         } catch (IOException e) {
@@ -67,6 +74,16 @@ public class Main {
     private static String extractWeight(String weightStr) {
         Matcher matcher = Pattern.compile("(\\d+)").matcher(weightStr);
         return matcher.find() ? matcher.group(1) : "0"; // Default to 0 if no number found
+    }
+    private static Integer extractYear(String launchAnnounced) {
+        if (launchAnnounced != null) {
+            Pattern pattern = Pattern.compile("(\\d{4})");  // Regex to find four consecutive digits
+            Matcher matcher = pattern.matcher(launchAnnounced);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));  // Return the first group of four digits found
+            }
+        }
+        return null;  // Return null if no year is found or input is null
     }
 }
 

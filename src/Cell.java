@@ -1,9 +1,7 @@
-import static java.util.regex.Pattern.quote;
-
 public class Cell {
     private String oem;
     private String model;
-    private String launch_announced;
+    private Integer launch_announced;
     private String launch_status;
     private String body_dimensions;
     private String body_weight;
@@ -14,9 +12,9 @@ public class Cell {
     private String features_sensors;
     private String platform_os;
 
-    public Cell(String oem, String model, String launched_announced, String launch_status, String body_dimension,
+    public Cell(String oem, String model, Integer launched_announced, String launch_status, String body_dimension,
                 String body_weight, String body_sim, String display_type, String display_size, String display_resolution,
-                 String features_sensors, String platform_os) {
+                String features_sensors, String platform_os) {
         this.oem = oem;
         this.model = model;
         this.launch_announced = launched_announced;
@@ -46,11 +44,12 @@ public class Cell {
     public void setModel(String model) {
         this.model = model;
     }
-    public String getLaunchAnnounced() {
+
+    public Integer getLaunchAnnounced() {
         return launch_announced;
     }
 
-    public void setLaunchAnnounced(String launchAnnounced) {
+    public void setLaunchAnnounced(Integer launch_announced) {
         this.launch_announced = launch_announced;
     }
 
@@ -59,7 +58,7 @@ public class Cell {
         return launch_status;
     }
 
-    public void setLaunchStatus(String launchStatus) {
+    public void setLaunchStatus(String launch_status) {
         this.launch_status = launch_status;
     }
 
@@ -68,7 +67,7 @@ public class Cell {
         return body_dimensions;
     }
 
-    public void setBodyDimensions(String bodyDimensions) {
+    public void setBodyDimensions(String body_dimensions) {
         this.body_dimensions = body_dimensions;
     }
 
@@ -77,7 +76,7 @@ public class Cell {
         return body_weight;
     }
 
-    public void setBodyWeight(String bodyWeight) {
+    public void setBodyWeight(String body_weight) {
         this.body_weight = body_weight;
     }
 
@@ -86,7 +85,7 @@ public class Cell {
         return body_sim;
     }
 
-    public void setBodySim(String bodySim) {
+    public void setBodySim(String body_sim) {
         this.body_sim = body_sim;
     }
 
@@ -95,7 +94,7 @@ public class Cell {
         return display_type;
     }
 
-    public void setDisplayType(String displayType) {
+    public void setDisplayType(String display_type) {
         this.display_type = display_type;
     }
 
@@ -104,7 +103,7 @@ public class Cell {
         return display_size;
     }
 
-    public void setDisplaySize(String displaySize) {
+    public void setDisplaySize(String display_size) {
         this.display_size = display_size;
     }
 
@@ -113,7 +112,7 @@ public class Cell {
         return display_resolution;
     }
 
-    public void setDisplayResolution(String displayResolution) {
+    public void setDisplayResolution(String display_resolution) {
         this.display_resolution = display_resolution;
     }
 
@@ -122,7 +121,7 @@ public class Cell {
         return features_sensors;
     }
 
-    public void setFeaturesSensors(String featuresSensors) {
+    public void setFeaturesSensors(String features_sensors) {
         this.features_sensors = features_sensors;
     }
 
@@ -131,29 +130,24 @@ public class Cell {
         return platform_os;
     }
 
-    public void setPlatformOs(String platformOs) {
+    public void setPlatformOs(String platform_os) {
         this.platform_os = platform_os;
     }
 
     @Override
     public String toString() {
-        return quote(oem) + "," +
-                quote(model) + "," +
-                quote(launch_announced) + "," +
-                quote(launch_status) + "," +
-                quote(body_dimensions) + "," +
-                quote(body_weight) + "," +
-               quote(body_sim) + "," +
-                quote(display_type) + "," +
-                quote(display_size) + "," +
-                quote(display_resolution) + "," +
-                quote(features_sensors) + "," +
-                quote(platform_os) + "," +
-                "";
-    }
-    private String quote(String data) {
-        if (data == null) return "";
-        return "\"" + data.replace("\"", "\"\"") + "\""; // Encloses in quotes and escapes existing quotes
+        return (oem != null ? oem : "") + "," +
+                (model != null ? model : "") + "," +
+                (launch_announced != null ? launch_announced : "") + "," +
+                (launch_status != null ? launch_status : "") + "," +
+                (body_dimensions != null ? body_dimensions : "") + "," +
+                (body_weight != null ? body_weight : "") + "," +
+                (body_sim != null ? body_sim : "") + "," +
+                (display_type != null ? display_type : "") + "," +
+                (display_size != null ? display_size : "") + "," +
+                (display_resolution != null ? display_resolution : "") + "," +
+                (features_sensors != null ? features_sensors : "") + "," +
+                (platform_os != null ? platform_os : "");
     }
 
 }
