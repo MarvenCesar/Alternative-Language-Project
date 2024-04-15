@@ -15,13 +15,34 @@ public class Main {
 
     public static void main(String[] args) {
         Map<Integer, Cell> cellMap = processCsvFile("src/cells.csv");
-        // Example of using the map
+
         for (Integer key : cellMap.keySet()) {
             System.out.println("Key: " + key + " Data: " + cellMap.get(key));
         }
         List<Cell> cells = new ArrayList<>(cellMap.values());
         calculateAverageLaunchYear(cells);
         writeCellMapToCSV(cellMap, "output.csv");
+        Cell myCell = new Cell(
+                "Samsung",
+                "Galaxy S21",
+                2021,
+                "Released",
+                "151.7 x 71.2 x 7.9 mm",
+                171f,
+                "Dynamic AMOLED 2X",
+                "LTPS IPS LCD capacitive touchscreen, 16M colors",
+                3.1f,
+                "480 x 800 pixels, 5:3 ratio (~267 ppi density)",
+                "Fingerprint (rear-mounted), accelerometer, gyro, proximity, compass, barometer",
+                "Android 10"
+        );
+
+
+        // Call printSummary to print the cell details to the console
+        myCell.printSummary();
+
+
+
 
     }
 

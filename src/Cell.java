@@ -133,6 +133,27 @@ public class Cell {
     public void setPlatformOs(String platform_os) {
         this.platform_os = platform_os;
     }
+    public String printSummary() {
+        // StringBuilder to create the summary string
+        StringBuilder summary = new StringBuilder();
+
+        // Append each field with a label for clarity
+        summary.append("OEM: ").append(this.oem != null ? this.oem : "Unknown").append("\n");
+        summary.append("Model: ").append(this.model != null ? this.model : "Unknown").append("\n");
+        summary.append("Launch Year: ").append(this.launch_announced != null ? this.launch_announced : "Unknown").append("\n");
+        summary.append("Launch Status: ").append(this.launch_status != null ? this.launch_status : "Unknown").append("\n");
+        summary.append("Body Dimensions: ").append(this.body_dimensions != null ? this.body_dimensions : "Unknown").append("\n");
+        summary.append("Body Weight: ").append(this.body_weight != null ? this.body_weight + "g" : "Unknown").append("\n");
+        summary.append("Display Type: ").append(this.display_type != null ? this.display_type : "Unknown").append("\n");
+        summary.append("Display Size: ").append(this.display_size != null ? this.display_size + " inches" : "Unknown").append("\n");
+        summary.append("Platform OS: ").append(this.platform_os != null ? this.platform_os : "Unknown").append("\n");
+        // Continue for other fields as necessary
+
+        // Print to console or return the string
+        String summaryString = summary.toString();
+        System.out.println(summaryString);
+        return summaryString;
+    }
 
     @Override
     public String toString() {
