@@ -27,36 +27,6 @@ public class Main {
 
     }
 
-    private static String[] customCsvLineSplitter(String line) {
-        // A placeholder that is unlikely to appear in the data.
-        final String placeholder = "CUBICCM";
-
-        // Replace " cc" and associated numerical value with the placeholder
-        line = line.replaceAll("(\\d+)\\s*cc", "$1" + placeholder);
-
-        // Split the line by commas that are not within quotes
-        List<String> values = new ArrayList<>();
-        boolean inQuotes = false;
-        StringBuilder currentField = new StringBuilder();
-
-        for (char c : line.toCharArray()) {
-            if (c == '"') {
-                inQuotes = !inQuotes; // Toggle the inQuotes flag
-            } else if (c == ',' && !inQuotes) {
-                values.add(currentField.toString()); // Add the currentField to values
-                currentField.setLength(0); // Reset the StringBuilder
-            } else {
-                currentField.append(c); // Append the character to the current field
-            }
-        }
-        values.add(currentField.toString()); // Add the last field
-
-        // Restore " cc" to any field that contains the placeholder
-        return values.stream()
-                .map(s -> s.replace(placeholder, " cc"))
-                .toArray(String[]::new);
-    }
-
 
     private static Map<Integer, Cell> processCsvFile(String filePath) {
         Map<Integer, Cell> cellMap = new HashMap<>();
@@ -70,7 +40,8 @@ public class Main {
                 Integer launchYear = extractYear(values[2]);
                 String launchStatusProcessed = processLaunchStatus(values[3]);
                 Float bodyWeight = extractWeightInGrams(values[5]);
-                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], bodyWeight, values[6],
+                String bodySimProcessed = processBodySim(values[6]);
+                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], bodyWeight, bodySimProcessed,
                         values[7], values[8], values[9], values[10], values[11]);
                 cellMap.put(index, cell); // Use the index as the key
                 index++; // Increment the index for the next entry
@@ -83,21 +54,43 @@ public class Main {
     private static String[] processDataLine(String line) {
         List<String> values = new ArrayList<>();
         boolean inQuotes = false;
+        int parenthesesLevel = 0; // This tracks the level of nested parentheses
         StringBuilder buffer = new StringBuilder();
 
         for (char c : line.toCharArray()) {
-            if (c == '"') {
-                inQuotes = !inQuotes;  // Toggle the inQuotes flag
-            } else if (c == ',' && !inQuotes) {
-                values.add(buffer.toString().trim());  // Add the buffered field to values
-                buffer.setLength(0);  // Reset the buffer
-            } else {
-                buffer.append(c);  // Continue building the field
+            switch (c) {
+                case '"':
+                    inQuotes = !inQuotes; // Toggle the inQuotes flag
+                    buffer.append(c);
+                    break;
+                case '(':
+                    if (!inQuotes) {
+                        parenthesesLevel++; // Increase nesting level if not in quotes
+                    }
+                    buffer.append(c);
+                    break;
+                case ')':
+                    if (!inQuotes && parenthesesLevel > 0) {
+                        parenthesesLevel--; // Decrease nesting level if not in quotes
+                    }
+                    buffer.append(c);
+                    break;
+                case ',':
+                    if (!inQuotes && parenthesesLevel == 0) {
+                        // Only add to values and reset buffer if we're not in quotes or inside parentheses
+                        values.add(buffer.toString().trim());
+                        buffer.setLength(0);
+                    } else {
+                        buffer.append(c); // It's a comma inside quotes or parentheses
+                    }
+                    break;
+                default:
+                    buffer.append(c); // Continue building the field
             }
         }
-        values.add(buffer.toString().trim());  // Add the last field to values
+        values.add(buffer.toString().trim()); // Add the last field to values
 
-        return values.toArray(new String[0]);  // Convert the list to an array and return
+        return values.toArray(new String[0]);
     }
     private static void writeCellMapToCSV(Map<Integer, Cell> cellMap, String filename) {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
@@ -176,6 +169,13 @@ public class Main {
         }
 
         return null;  // Return null if no valid weight is found
+    }
+    private static String processBodySim(String body_sim) {
+        // Check if the bodySim is null, equals to "No", "Yes", or doesn't consist of only letters
+        if ( "No".equalsIgnoreCase(body_sim) || "Yes".equalsIgnoreCase(body_sim) ) {
+            return null;  // Return null for invalid data
+        }
+        return body_sim;  // Return the original bodySim for valid data
     }
     }
 
