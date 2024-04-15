@@ -41,7 +41,8 @@ public class Main {
                 String bodySimProcessed = processBodySim(values[6]);
                 Float displaySizeProcessed = extractDisplaySizeInInches(values[8]);
                 String platformOSProcessed = processPlatformOS(values[11]);
-                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], bodyWeight, bodySimProcessed,
+                String bodyDimensionsProcessed = processBodyDimensions(values[4]);
+                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, bodyDimensionsProcessed, bodyWeight, bodySimProcessed,
                         values[7], displaySizeProcessed, values[9], values[10], platformOSProcessed);
                 cellMap.put(index, cell); // Use the index as the key
                 index++; // Increment the index for the next entry
@@ -168,7 +169,7 @@ public class Main {
         return null;  // Return null if no valid weight is found
     }
     private static String processBodySim(String body_sim) {
-        // Check if the bodySim is null, equals to "No", "Yes", or doesn't consist of only letters
+        // Check if the bodySim equals to "No", "Yes", or doesn't consist of only letters
         if ( "No".equalsIgnoreCase(body_sim) || "Yes".equalsIgnoreCase(body_sim) ) {
             return null;  // Return null for invalid data
         }
@@ -209,6 +210,12 @@ public class Main {
 
         // Return the cleaned string if there's no comma
         return cleanPlatformOS;
+    }
+    private static String processBodyDimensions(String bodyDimensions) {
+        if (bodyDimensions == null || bodyDimensions.contains("-") || bodyDimensions.contains("V1")) {
+            return null;
+        }
+        return bodyDimensions;
     }
     }
 
