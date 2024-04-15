@@ -7,13 +7,13 @@ public class Cell {
     private Float body_weight;
     private String body_sim;
     private String display_type;
-    private String display_size;
+    private Float display_size;
     private String display_resolution;
     private String features_sensors;
     private String platform_os;
 
     public Cell(String oem, String model, Integer launched_announced, String launch_status, String body_dimension,
-                Float body_weight, String body_sim, String display_type, String display_size, String display_resolution,
+                Float body_weight, String body_sim, String display_type, Float display_size, String display_resolution,
                 String features_sensors, String platform_os) {
         this.oem = oem;
         this.model = model;
@@ -99,11 +99,11 @@ public class Cell {
     }
 
     // Getters and setters for displaySize
-    public String getDisplaySize() {
+    public Float getDisplaySize() {
         return display_size;
     }
 
-    public void setDisplaySize(String display_size) {
+    public void setDisplaySize(Float display_size) {
         this.display_size = display_size;
     }
 
@@ -144,7 +144,7 @@ public class Cell {
                 (body_weight != null ? body_weight : "") + "," +
                 (body_sim != null ? body_sim : "") + "," +
                 (display_type != null ? display_type : "") + "," +
-                (display_size != null ? display_size : "") + "," +
+                (display_size != null ? display_size + " inches" : " ") + "," +
                 (display_resolution != null ? display_resolution : "") + "," +
                 (features_sensors != null ? features_sensors : "") + "," +
                 (platform_os != null ? platform_os : "");

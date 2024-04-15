@@ -41,8 +41,9 @@ public class Main {
                 String launchStatusProcessed = processLaunchStatus(values[3]);
                 Float bodyWeight = extractWeightInGrams(values[5]);
                 String bodySimProcessed = processBodySim(values[6]);
+                Float displaySizeProcessed = extractDisplaySizeInInches(values[8]);
                 Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], bodyWeight, bodySimProcessed,
-                        values[7], values[8], values[9], values[10], values[11]);
+                        values[7], displaySizeProcessed, values[9], values[10], values[11]);
                 cellMap.put(index, cell); // Use the index as the key
                 index++; // Increment the index for the next entry
             }
@@ -176,6 +177,23 @@ public class Main {
             return null;  // Return null for invalid data
         }
         return body_sim;  // Return the original bodySim for valid data
+    }
+    private static Float extractDisplaySizeInInches(String displaySizeStr) {
+        // Regex to check if the string contains a number followed by "inches"
+        Pattern pattern = Pattern.compile("(\\d+(\\.\\d+)?)\\s*inches", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(displaySizeStr);
+
+        if (matcher.find()) {
+            String size = matcher.group(1);  // This extracts the number before "inches"
+            try {
+                return Float.parseFloat(size);  // Parse the extracted number as a float and return
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid format for display size: " + displaySizeStr);
+                return null;
+            }
+        }
+
+        return null;  // Return null if no valid format is found
     }
     }
 
