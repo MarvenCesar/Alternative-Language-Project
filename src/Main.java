@@ -7,6 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.FileReader;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 
@@ -21,6 +23,17 @@ public class Main {
         }
         List<Cell> cells = new ArrayList<>(cellMap.values());
         calculateAverageLaunchYear(cells);
+        Optional<Map.Entry<String, Double>> oemWithHighestAvgWeight = CellStatistics.getOemWithHighestAverageWeight(cells);
+        // print function to display OEM and models of phones with different announce and release years
+        CellUtils.printPhonesWithDifferentAnnounceAndReleaseYears(cells);
+
+        // Print out the result
+        if (oemWithHighestAvgWeight.isPresent()) {
+            Map.Entry<String, Double> entry = oemWithHighestAvgWeight.get();
+            System.out.println("OEM with the highest average body weight: " + entry.getKey() + " with an average of " + entry.getValue() + " grams");
+        } else {
+            System.out.println("Could not determine the OEM with the highest average body weight.");
+        }
         writeCellMapToCSV(cellMap, "output.csv");
         Cell myCell = new Cell(
                 "Samsung",
@@ -166,7 +179,7 @@ public class Main {
 
         if (yearCount > 0) {
             double averageYear = (double) totalYears / yearCount;
-            System.out.println("Average Launch Year: " + averageYear);
+            System.out.println("\n Average Launch Year: " + averageYear);
         } else {
             System.out.println("No valid launch years to calculate average.");
         }
@@ -237,6 +250,46 @@ public class Main {
             return null;
         }
         return bodyDimensions;
+    }
+    public class CellStatistics {
+
+        // ...
+
+        public static Optional<Map.Entry<String, Double>> getOemWithHighestAverageWeight(List<Cell> cells) {
+            // Map of OEM to their average weights
+            Map<String, Double> oemAverageWeights = cells.stream()
+                    // Filter out cells with no weight information
+                    .filter(cell -> cell.getBodyWeight() != null)
+                    // Group by OEM
+                    .collect(Collectors.groupingBy(
+                            Cell::getOem,
+                            // Averaging the body weights
+                            Collectors.averagingDouble(Cell::getBodyWeight)
+                    ));
+
+            // Find the entry with the highest average weight
+            return oemAverageWeights.entrySet().stream()
+                    .max(Map.Entry.comparingByValue());
+        }
+    }
+    public class CellUtils {
+
+        // Method to find phones that were announced in one year and released in another
+        public static List<Cell> findPhonesWithDifferentAnnounceAndReleaseYears(List<Cell> cells) {
+            return cells.stream()
+                    // Filter for cells that have both announced and release years and they are different
+                    .filter(cell -> cell.getLaunchAnnounced() != null && cell.getLaunchStatus() != null
+                            && !cell.getLaunchAnnounced().equals(cell.getLaunchStatus()))
+                    .collect(Collectors.toList());
+        }
+
+        // Method to print the OEM and model of those phones
+        public static void printPhonesWithDifferentAnnounceAndReleaseYears(List<Cell> cells) {
+            System.out.println("\nList of phones with different Announced and Released Years: ");
+            findPhonesWithDifferentAnnounceAndReleaseYears(cells).forEach(cell ->
+                    System.out.println("Company: " + cell.getOem() + ", Model: " + cell.getModel())
+            );
+        }
     }
     }
 
