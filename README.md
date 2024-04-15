@@ -78,4 +78,4 @@ Through well-structured code and comprehensive use of Java features such as exce
 
 ---
 ###  SCREENSHOT OF ANSWERS:
-![Application Screenshot]("AnswersScreenshot.png")
+![Application Screenshot](AnswersScreenshot.png)
