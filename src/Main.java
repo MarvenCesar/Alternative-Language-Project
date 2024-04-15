@@ -12,8 +12,6 @@ import java.util.List;
 
 
 public class Main {
-    private static final int NUM_FIELDS = 12;
-    private static final int WEIGHT_COLUMN_INDEX = 5;
 
     public static void main(String[] args) {
         Map<Integer, Cell> cellMap = processCsvFile("src/cells.csv");
@@ -42,8 +40,9 @@ public class Main {
                 Float bodyWeight = extractWeightInGrams(values[5]);
                 String bodySimProcessed = processBodySim(values[6]);
                 Float displaySizeProcessed = extractDisplaySizeInInches(values[8]);
+                String platformOSProcessed = processPlatformOS(values[11]);
                 Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, values[4], bodyWeight, bodySimProcessed,
-                        values[7], displaySizeProcessed, values[9], values[10], values[11]);
+                        values[7], displaySizeProcessed, values[9], values[10], platformOSProcessed);
                 cellMap.put(index, cell); // Use the index as the key
                 index++; // Increment the index for the next entry
             }
@@ -105,10 +104,7 @@ public class Main {
             System.err.println("Error while writing to the file: " + e.getMessage());
         }
     }
-    private static String extractWeight(String weightStr) {
-        Matcher matcher = Pattern.compile("(\\d+)").matcher(weightStr);
-        return matcher.find() ? matcher.group(1) : "0"; // Default to 0 if no number found
-    }
+
     private static Integer extractYear(String launchAnnounced) {
         Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
         Matcher yearMatcher = yearPattern.matcher(launchAnnounced);
@@ -194,6 +190,25 @@ public class Main {
         }
 
         return null;  // Return null if no valid format is found
+    }
+    private static String processPlatformOS(String platformOS) {
+        if (platformOS == null || platformOS.matches("^\\d+(\\.\\d+)?$")) {
+            // Returns null for null or purely numeric strings
+            return null;
+        }
+
+        // Trim the string and remove leading and trailing quotes
+        String cleanPlatformOS = platformOS.trim().replaceAll("^\"+|\"+$", "");
+
+        // Find the first comma and return the substring up to that point, if it exists
+        int commaIndex = cleanPlatformOS.indexOf(',');
+        if (commaIndex != -1) {
+            // Return the substring up to the first comma
+            return cleanPlatformOS.substring(0, commaIndex).trim();
+        }
+
+        // Return the cleaned string if there's no comma
+        return cleanPlatformOS;
     }
     }
 
