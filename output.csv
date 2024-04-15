@@ -244,15 +244,15 @@ Index,OEM,Model,Launch Announced,Launch Status,Body Dimensions,Body Weight,Body 
 242,Maxon,MX-A30,2004,Discontinued,90 x 48.5 x 22.4 mm (3.54 x 1.91 x 0.88 in),90.0,Mini-SIM,"TFT, 65K colors", ,128 x 160 pixels,V1,
 243,Maxon,MX-C60,2003,Discontinued,80 x 45 x 22.9 mm (3.15 x 1.77 x 0.90 in),85.0,Mini-SIM,"CSTN, 65K colors", ,"128 x 128 pixels, 8 lines, 1:1 ratio",V1,
 244,Maxon,MX-C20,2003,Discontinued,91 x 46 x 23 mm (3.58 x 1.81 x 0.91 in),90.0,Mini-SIM,"CSTN, 65K colors", ,"128 x 160 pixels, 7 lines",V1,
-245,Maxon,MX-C110,2004,Discontinued,86 x 46 x 21 mm (3.39 x 1.81 x 0.83 in),85.0,Mini-SIM,65K colors, ,-,V1,
+245,Maxon,MX-C110,2004,Discontinued,86 x 46 x 21 mm (3.39 x 1.81 x 0.83 in),85.0,Mini-SIM,65K colors, ,,V1,
 246,Maxon,MX-E10,2003,Discontinued,91 x 48 x 22.6 mm (3.58 x 1.89 x 0.89 in),90.0,Mini-SIM,"TFT, 65K colors", ,"176 x 220 pixels, 10 lines",V1,
 247,Maxon,MX-V10,2004,Discontinued,78 x 37 x 20.5 mm (3.07 x 1.46 x 0.81 in),67.0,Mini-SIM,"STN, 65K colors", ,"128 x 128 pixels, 1:1 ratio",V1,
-248,Maxon,MX-V30,2004,Discontinued,81 x 43 x 21 mm (3.19 x 1.69 x 0.83 in),80.0,Mini-SIM,"TFT, 65K colors", ,-,V1,
+248,Maxon,MX-V30,2004,Discontinued,81 x 43 x 21 mm (3.19 x 1.69 x 0.83 in),80.0,Mini-SIM,"TFT, 65K colors", ,,V1,
 249,Maxon,MX-7990,2003,Discontinued,78 x 37 x 20.5 mm (3.07 x 1.46 x 0.81 in),67.0,Mini-SIM,65K colors, ,"128 x 128 pixels, 8 lines, 1:1 ratio",V1,
 250,Maxon,MX-E80,2004,Cancelled,,,Mini-SIM,65K colors, ,-,V1,
-251,Maxon,MX-7750,2004,Discontinued,85 x 45 x 21 mm (3.35 x 1.77 x 0.83 in),81.0,Mini-SIM,65K colors, ,-,V1,
+251,Maxon,MX-7750,2004,Discontinued,85 x 45 x 21 mm (3.35 x 1.77 x 0.83 in),81.0,Mini-SIM,65K colors, ,,V1,
 252,Maxon,MX-C11,2004,Discontinued,85 x 45 x 21 mm (3.35 x 1.77 x 0.83 in),81.0,Mini-SIM,65K colors, ,"128 x 128 pixels, 1:1 ratio",V1,
-253,Maxon,MX-C160,2004,Discontinued,65 x 37 x 22 mm (2.56 x 1.46 x 0.87 in),59.0,Mini-SIM,4096 colors, ,-,V1,
+253,Maxon,MX-C160,2004,Discontinued,65 x 37 x 22 mm (2.56 x 1.46 x 0.87 in),59.0,Mini-SIM,4096 colors, ,,V1,
 254,Maxon,MX-7940,2003,Discontinued,80 x 45 x 24 mm (3.15 x 1.77 x 0.94 in),85.0,Mini-SIM,"UFB, 65K colors", ,"128 x 128 pixels, 8 lines, 1:1 ratio",V1,
 255,Maxon,MX-7920,2003,Discontinued,64.9 x 37 x 22.1 mm (2.56 x 1.46 x 0.87 in),59.0,Mini-SIM,"Grayscale graphic, 4 shades", ,"128 x 128 pixels, 7 lines, 1:1 ratio",V1,
 256,Maxon,MX-7830,2003,Discontinued,113 x 47 x 19 mm (4.45 x 1.85 x 0.75 in),95.0,Mini-SIM,65K colors, ,"128 x 160 pixels, 11 lines",V1,
@@ -999,12 +999,3 @@ Index,OEM,Model,Launch Announced,Launch Status,Body Dimensions,Body Weight,Body 
 997,Huawei,P Smart Z,2019,2019,163.5 x 77.3 x 8.8 mm (6.44 x 3.04 x 0.35 in),196.8,"Single SIM (Nano-SIM) or Hybrid Dual SIM (Nano-SIM, dual stand-by)","LTPS IPS LCD capacitive touchscreen, 16M colors",6.59 inches,"1080 x 2340 pixels, 19.5:9 ratio (~391 ppi density)","Fingerprint (rear-mounted), accelerometer, gyro, proximity, compass",Android 9.0 (Pie)
 998,Huawei,Mate 20 X (5G),2019,2019,174.6 x 85.4 x 8.4 mm (6.87 x 3.36 x 0.33 in),233.0,"Hybrid Dual SIM (Nano-SIM, dual stand-by)","OLED capacitive touchscreen, 16M colors",7.2 inches,"1080 x 2244 pixels, 18.7:9 ratio (~346 ppi density)","Fingerprint (rear-mounted), accelerometer, gyro, proximity, barometer, compass",Android 9.0 (Pie)
 999,Huawei,Y5 (2019),2019,2019,147.1 x 70.8 x 8.5 mm (5.79 x 2.79 x 0.33 in),146.0,"Single SIM (Nano-SIM) or Dual SIM (Nano-SIM, dual stand-by)","IPS LCD capacitive touchscreen, 16M colors",5.71 inches,"720 x 1520 pixels, 19:9 ratio (~295 ppi density)","Accelerometer, proximity",Android 9.0 (Pie)
-
-
- Company with the highest average body weight: HP with an average of 453.6000061035156 grams
-
-
-The year with the most phone launches after 1999 is: 2019
-
-
-Number of phones with only one feature sensor: 432
