@@ -19,6 +19,8 @@ public class Main {
     public static void main(String[] args) {
         Map<Integer, Cell> cellMap = processCsvFile("src/cells.csv");
 
+        writeCellMapToCSV(cellMap, "output.csv");
+
         for (Integer key : cellMap.keySet()) {
             System.out.println("Key: " + key + " Data: " + cellMap.get(key));
         }
@@ -29,25 +31,31 @@ public class Main {
         CellUtils.printPhonesWithDifferentAnnounceAndReleaseYears(cells);
         long singleSensorPhonesCount = CellUtils.countPhonesWithSingleFeatureSensor(cells);
 
-        // Print the result
-        System.out.println("Number of phones with only one feature sensor: " + singleSensorPhonesCount);
-        Optional<Integer> yearWithMostLaunches = CellUtils.findYearWithMostPhoneLaunches(cells);
-
-        // Print the result
-        yearWithMostLaunches.ifPresent(year ->
-                System.out.println("The year with the most phone launches after 1999 is: " + year)
-        );
-
-        // Print out the result
         if (oemWithHighestAvgWeight.isPresent()) {
             Map.Entry<String, Double> entry = oemWithHighestAvgWeight.get();
-            System.out.println("OEM with the highest average body weight: " + entry.getKey() + " with an average of " + entry.getValue() + " grams");
+            String output = "\n Company with the highest average body weight: " + entry.getKey() + " with an average of " + entry.getValue() + " grams";
+            System.out.println(output);
+            appendToCSV("output.csv", output);
         } else {
-            System.out.println("Could not determine the OEM with the highest average body weight.");
+            String output = "\n Could not determine the OEM with the highest average body weight.";
+            System.out.println(output);
+            appendToCSV("output.csv", output);
         }
-        writeCellMapToCSV(cellMap, "output.csv");
+
+        Optional<Integer> yearWithMostLaunches = CellUtils.findYearWithMostPhoneLaunches(cells);
+        yearWithMostLaunches.ifPresent(year -> {
+            String output = "\nThe year with the most phone launches after 1999 is: " + year;
+            System.out.println(output);
+            appendToCSV("output.csv", output);
+        });
+
+        String output = "\nNumber of phones with only one feature sensor: " + singleSensorPhonesCount;
+        System.out.println(output);
+        appendToCSV("output.csv", output);
+
+
         Cell myCell = new Cell(
-                "Samsung",
+                "\n Samsung",
                 "Galaxy S21",
                 2021,
                 "Released",
@@ -338,6 +346,30 @@ public class Main {
                     .map(Map.Entry::getKey); // Extract the year
         }
     }
+    private static void appendToCSV(String filename, String text) {
+        FileWriter fileWriter = null;
+        PrintWriter printWriter = null;
+        try {
+            fileWriter = new FileWriter(filename, true); // Set true for append mode
+            printWriter = new PrintWriter(fileWriter);
+            printWriter.println(); // Add a newline for separation
+            printWriter.println(text); // Append the text
+        } catch (IOException e) {
+            e.printStackTrace(); // This will print the stack trace to help diagnose the issue
+        } finally {
+            try {
+                if (printWriter != null) {
+                    printWriter.close(); // Close PrintWriter to flush the stream
+                }
+                if (fileWriter != null) {
+                    fileWriter.close(); // Close FileWriter
+                }
+            } catch (IOException e) {
+                e.printStackTrace(); // This will print the stack trace if closing the file failed
+            }
+        }
+    }
+
 }
 
 
