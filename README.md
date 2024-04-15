@@ -76,3 +76,6 @@ Java was chosen for this project due to its robust object-oriented programming c
 
 Through well-structured code and comprehensive use of Java features such as exception handling, loops, conditional and assignment statements, and subprograms, the project ensures code readability, maintainability, and reusability. Each component has been carefully crafted to contribute to the overall functionality, allowing for easy modifications and enhancements in the future.
 
+---
+###  SCREENSHOT OF ANSWERS:
+![Application Screenshot](AnswersScreenshot.png")AnswersScreenshot.png
