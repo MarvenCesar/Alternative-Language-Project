@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 
 
@@ -26,6 +27,16 @@ public class Main {
         Optional<Map.Entry<String, Double>> oemWithHighestAvgWeight = CellStatistics.getOemWithHighestAverageWeight(cells);
         // print function to display OEM and models of phones with different announce and release years
         CellUtils.printPhonesWithDifferentAnnounceAndReleaseYears(cells);
+        long singleSensorPhonesCount = CellUtils.countPhonesWithSingleFeatureSensor(cells);
+
+        // Print the result
+        System.out.println("Number of phones with only one feature sensor: " + singleSensorPhonesCount);
+        Optional<Integer> yearWithMostLaunches = CellUtils.findYearWithMostPhoneLaunches(cells);
+
+        // Print the result
+        yearWithMostLaunches.ifPresent(year ->
+                System.out.println("The year with the most phone launches after 1999 is: " + year)
+        );
 
         // Print out the result
         if (oemWithHighestAvgWeight.isPresent()) {
@@ -55,8 +66,6 @@ public class Main {
         myCell.printSummary();
 
 
-
-
     }
 
 
@@ -76,7 +85,7 @@ public class Main {
                 Float displaySizeProcessed = extractDisplaySizeInInches(values[8]);
                 String platformOSProcessed = processPlatformOS(values[11]);
                 String bodyDimensionsProcessed = processBodyDimensions(values[4]);
-                Cell cell = new Cell(values[0], values[1], launchYear,launchStatusProcessed, bodyDimensionsProcessed, bodyWeight, bodySimProcessed,
+                Cell cell = new Cell(values[0], values[1], launchYear, launchStatusProcessed, bodyDimensionsProcessed, bodyWeight, bodySimProcessed,
                         values[7], displaySizeProcessed, values[9], values[10], platformOSProcessed);
                 cellMap.put(index, cell); // Use the index as the key
                 index++; // Increment the index for the next entry
@@ -86,6 +95,7 @@ public class Main {
         }
         return cellMap;
     }
+
     private static String[] processDataLine(String line) {
         List<String> values = new ArrayList<>();
         boolean inQuotes = false;
@@ -127,6 +137,7 @@ public class Main {
 
         return values.toArray(new String[0]);
     }
+
     private static void writeCellMapToCSV(Map<Integer, Cell> cellMap, String filename) {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
             // Optionally write a header line
@@ -148,6 +159,7 @@ public class Main {
         }
         return null;  // Return null if no year is found
     }
+
     private static String processLaunchStatus(String launchStatus) {
         if (launchStatus != null && (launchStatus.equals("Discontinued") || launchStatus.equals("Cancelled"))) {
             return launchStatus;
@@ -162,6 +174,7 @@ public class Main {
 
         return null;  // If it doesn't match the year pattern or the special cases, return null
     }
+
     private static void calculateAverageLaunchYear(List<Cell> cells) {
         int totalYears = 0;
         int yearCount = 0;
@@ -184,6 +197,7 @@ public class Main {
             System.out.println("No valid launch years to calculate average.");
         }
     }
+
     private static Float extractWeightInGrams(String bodyWeight) {
         // Regex to find an integer or float number followed by a 'g' (ignoring case).
         Pattern pattern = Pattern.compile("(\\d+(?:\\.\\d+)?)\\s*g", Pattern.CASE_INSENSITIVE);
@@ -202,13 +216,15 @@ public class Main {
 
         return null;  // Return null if no valid weight is found
     }
+
     private static String processBodySim(String body_sim) {
         // Check if the bodySim equals to "No", "Yes", or doesn't consist of only letters
-        if ( "No".equalsIgnoreCase(body_sim) || "Yes".equalsIgnoreCase(body_sim) ) {
+        if ("No".equalsIgnoreCase(body_sim) || "Yes".equalsIgnoreCase(body_sim)) {
             return null;  // Return null for invalid data
         }
         return body_sim;  // Return the original bodySim for valid data
     }
+
     private static Float extractDisplaySizeInInches(String displaySizeStr) {
         // Regex to check if the string contains a number followed by "inches"
         Pattern pattern = Pattern.compile("(\\d+(\\.\\d+)?)\\s*inches", Pattern.CASE_INSENSITIVE);
@@ -226,6 +242,7 @@ public class Main {
 
         return null;  // Return null if no valid format is found
     }
+
     private static String processPlatformOS(String platformOS) {
         if (platformOS == null || platformOS.matches("^\\d+(\\.\\d+)?$")) {
             // Returns null for null or purely numeric strings
@@ -245,15 +262,16 @@ public class Main {
         // Return the cleaned string if there's no comma
         return cleanPlatformOS;
     }
+
     private static String processBodyDimensions(String bodyDimensions) {
         if (bodyDimensions == null || bodyDimensions.contains("-") || bodyDimensions.contains("V1")) {
             return null;
         }
         return bodyDimensions;
     }
+
     public class CellStatistics {
 
-        // ...
 
         public static Optional<Map.Entry<String, Double>> getOemWithHighestAverageWeight(List<Cell> cells) {
             // Map of OEM to their average weights
@@ -272,6 +290,7 @@ public class Main {
                     .max(Map.Entry.comparingByValue());
         }
     }
+
     public class CellUtils {
 
         // Method to find phones that were announced in one year and released in another
@@ -290,8 +309,36 @@ public class Main {
                     System.out.println("Company: " + cell.getOem() + ", Model: " + cell.getModel())
             );
         }
+
+        // Method to count how many phones have only one feature sensor
+        public static long countPhonesWithSingleFeatureSensor(List<Cell> cells) {
+            return cells.stream()
+                    // Filter cells that have exactly one feature sensor
+                    .filter(cell -> {
+                        String features = cell.getFeaturesSensors();
+
+                        // One sensor would have no comma
+                        return features != null && features.chars().filter(ch -> ch == ',').count() == 0;
+                    })
+                    .count(); // Count the filtered cells
+        }
+
+        // Method to find the year with the most phone launches after 1999
+        public static Optional<Integer> findYearWithMostPhoneLaunches(List<Cell> cells) {
+            // Map of year to the count of launches
+            Map<Integer, Long> launchCountByYear = cells.stream()
+                    .map(Cell::getLaunchAnnounced) // Extract launch years
+                    .filter(year -> year != null && year > 1999) // Filter out years that are null or <= 1999
+                    .collect(Collectors.groupingBy(year -> year, Collectors.counting())); // Group by year and count
+
+            // Find the year with the maximum count of launches
+            return launchCountByYear.entrySet()
+                    .stream()
+                    .max(Comparator.comparing(Map.Entry::getValue))
+                    .map(Map.Entry::getKey); // Extract the year
+        }
     }
-    }
+}
 
 
 
